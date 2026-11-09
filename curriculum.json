@@ -1,0 +1,173 @@
+{
+  "car": "2027 Audi Q7 quattro, Merapi Gray, VIN WA1CYBG8XVD005536",
+  "lessons": [
+    {
+      "id": "lot-plan",
+      "title": "The demo drive game plan",
+      "zones": [
+        "lot"
+      ],
+      "card": "Setup: a great demo is staged, not improvised. Today's drive is the model for every customer drive.\nHow it works: the flow is walkaround, cockpit setup, local roads for comfort and awareness tech, the highway for the assist systems, then parking back at the store. Before the customer gets in, the consultant pairs their own phone, sets navigation to the demo route, picks a B&O preset, sets seat ventilation and the head-up display, and checks the hands-free trial is active in the car.\nTurn it on now: have the driver set their seat and mirrors with the memory buttons, and ask the passenger to start navigation to I-95.\nCustomer demo: \"I've set this up so you can just drive and feel it. I'll tell you when to try things.\"\nWatch-outs: never let the first five minutes be menus. Customers remember feelings, not settings.\nPractice: ask one consultant to walk through their demo route out loud in under 30 seconds."
+    },
+    {
+      "id": "lot-cockpit",
+      "title": "Cockpit, screens and voice",
+      "zones": [
+        "lot",
+        "return"
+      ],
+      "card": "Setup: three screens and a voice assistant that can actually hold a conversation.\nHow it works: a curved OLED panoramic display carries the virtual cockpit (about 11.9 inches [VERIFY]) and the 14.5-inch MMI touchscreen. The 12.3-inch passenger display has a distraction-free dynamic privacy mode, so the passenger can watch video from Audi's app store while the driver can't see it [VERIFY on this car]. The Audi assistant handles car commands and hands general questions to ChatGPT. That needs the Audi connect NAV subscription, which comes with a 3-year term, and ChatGPT's knowledge stops in mid-2024.\nTurn it on now: wake the assistant with the voice button on the steering wheel, or by saying \"Hey Audi\" [VERIFY]. Ask it to set the temperature to 70, then ask it a general question.\nCustomer demo: let the customer talk to the car. \"Ask it anything.\" Then show the passenger screen to whoever rides shotgun.\nWatch-outs: don't promise video while driving on the driver's side. It's built to block that.\nPractice: a consultant explains the privacy mode in one sentence a spouse would understand."
+    },
+    {
+      "id": "lot-lighting",
+      "title": "Digital Matrix lighting and signatures",
+      "zones": [
+        "lot",
+        "return"
+      ],
+      "card": "Setup: lighting is the Q7's jewelry, and it's the first thing a customer sees.\nHow it works: each Digital Matrix LED headlight has about 25,600 micro-LEDs that a computer controls like pixels. The Q7 offers up to eight digital light signatures, selectable in the MMI. On unlock and lock the lights play a welcome and goodbye staging [VERIFY]. The front and rear Audi rings are illuminated. Audi Beam, which projects the rings on the ground from the doors, is a dealer accessory on this car, not a factory feature. Third-generation OLED taillights with communication lights are Prestige and SQ7 only, which makes them a step-up point.\nTurn it on now: when stopped, the passenger opens the light settings in the MMI and switches signatures, while someone watches from outside.\nCustomer demo: stand the customer in front of the car, lock and unlock with the key, then open the door at the curb so they see Audi Beam.\nWatch-outs: don't sell OLED communication taillights on this trim.\nPractice: a consultant does the 15-second lighting reveal script."
+    },
+    {
+      "id": "lot-comfort",
+      "title": "Comfort and the family test",
+      "zones": [
+        "lot",
+        "return"
+      ],
+      "card": "Setup: the Q7 wins families on space and small luxuries.\nHow it works: power soft-close doors pull themselves shut. Front seats are ventilated, with a heated wheel and armrests. Four-zone climate gives the back seats their own settings. The panoramic roof switches between clear and frosted, and the rear side windows have power sunshades. The second and third rows fold by power, there's LATCH at every second- and third-row seat, and maximum cargo is 78.1 cubic feet, about 10 more than the last Q7. Six-seat captain's chairs are a $450 option, a first for the Q7.\nTurn it on now: the passenger fogs and clears the roof, and someone tries a soft-close door.\nCustomer demo: put the customer in the third row and fold a second-row seat with the button. Let the kids push the soft-close door.\nWatch-outs: captain's chairs aren't on this car, so order one or find another unit.\nPractice: a consultant answers \"Will my teenager actually fit back there?\""
+    },
+    {
+      "id": "dark-matrix",
+      "title": "Glare-free high beam at night",
+      "zones": [
+        "local",
+        "highway",
+        "i95",
+        "parkway"
+      ],
+      "card": "Setup: this is the best night demo in the segment, and it's new to the US.\nHow it works: the Digital Matrix headlights have adaptive driving beam, the first time Audi's glare-free high beam is enabled in the US. Cameras find cars ahead and oncoming, and the lights cut a moving shadow around them while the rest of the road stays in high beam. In Europe the lights also project lane and orientation light onto the road. Don't promise that here unless you see it [VERIFY].\nTurn it on now: the driver sets the light switch to automatic and pushes the turn-signal stalk forward to arm the high-beam assist [VERIFY]. Then watch an oncoming car get boxed out of the beam.\nCustomer demo: on a dark stretch, stop talking and point: \"Watch the light wrap around that car.\"\nWatch-outs: on well-lit roads it barely shows, so pick a dark road for customers.\nPractice: a consultant explains adaptive driving beam without the word \"pixel.\"",
+      "dark": true
+    },
+    {
+      "id": "local-driveselect",
+      "title": "Drive select, ride and quattro",
+      "zones": [
+        "local"
+      ],
+      "card": "Setup: the new Q7 rides softer than the last one, and customers feel it in the first mile.\nHow it works: this car has steel springs tuned for more comfort than the previous Q7. Adaptive air suspension is Prestige and SQ7. quattro now has a standard limited-slip center differential with preload, so power shifts quickly to the axle with grip. Audi drive select changes steering weight, throttle response and transmission behavior. On the new Audis the modes include balanced, comfort, dynamic, individual, and an assistant mode that picks for you [VERIFY].\nTurn it on now: at the next stop, the driver opens drive select on the screen or with the drive select button [VERIFY] and picks comfort. Later, try dynamic on a curvy road.\nCustomer demo: on a rough patch say, \"Feel how it soaks that up.\" Then switch to dynamic before a curve.\nWatch-outs: don't claim air suspension or an off-road mode on this car.\nPractice: a consultant handles \"Does it drive like a big truck?\""
+    },
+    {
+      "id": "local-awareness",
+      "title": "Awareness tech for town",
+      "zones": [
+        "local",
+        "stopped"
+      ],
+      "card": "Setup: in town, the Q7 is watching every side of the car.\nHow it works: standard surround view cameras and sensors cover all sides. Audi side assist uses rear radar for blind spots, and exit warning can hold a door shut or stop it opening when a car or cyclist is coming. Rear cross-traffic assist watches when backing out. Traffic sign recognition reads speed limits into the driver display and the head-up display. Lane departure warning has two modes: reduced, which vibrates the wheel, and normal, which also steers you back. Forward emergency braking detects pedestrians and cyclists.\nTurn it on now: point out the speed limit in the head-up display. At a stop, the passenger shows the lane departure mode setting.\nCustomer demo: when parking, tell them, \"If a bike were coming, the door would warn you and can hold itself shut.\" Explain it, don't stage it.\nWatch-outs: never create a hazard to show a safety system.\nPractice: a consultant explains exit warning to a parent with a bike-riding teen."
+    },
+    {
+      "id": "local-sound",
+      "title": "Bang and Olufsen 3D sound",
+      "zones": [
+        "local"
+      ],
+      "card": "Setup: sound sells, and it's the easiest wow on a drive.\nHow it works: this car has Bang and Olufsen 3D sound, with speakers that add height so the music feels like a room. For 2027 every B&O system adds Sound Enhancement Plus and Virtual Rooms presets. The 4D upgrade is $950 and adds 22 speakers, 1,360 watts, and front-seat actuators you feel.\nTurn it on now: the passenger opens sound settings, turns on 3D and tries a Virtual Room. Ask a trainee to pick a song with a big low end.\nCustomer demo: ask for their favorite song before the drive, play it at a stop, raise the volume, and say nothing for 20 seconds.\nWatch-outs: don't demo 4D on this car. Sell it as the upgrade for music lovers.\nPractice: a consultant gives the 4D step-up line in one sentence."
+    },
+    {
+      "id": "stopped-passenger",
+      "title": "Dashcam and passenger tech at a stop",
+      "zones": [
+        "stopped"
+      ],
+      "card": "Setup: two features nobody asks about that close deals for commuters and parents.\nHow it works: the built-in 4K HDR dashcam saves an event clip of 30 seconds before and after, automatically in a crash or manually. It can also trigger on hazard lights or emergency braking. Clips save to an SD card the owner supplies, along with speed, time and navigation data. It's controlled from the dashcam app on the center screen.\nTurn it on now: while stopped, the passenger opens the dashcam app and saves a manual clip [VERIFY the save control].\nCustomer demo: \"If anything happens, you've got 4K video of it without buying a separate camera.\"\nWatch-outs: it needs the customer's own SD card, so tell them at delivery.\nPractice: a consultant handles \"Is the camera recording me?\" (the dashcam faces the road, and the driver camera only checks attention)."
+    },
+    {
+      "id": "hwy-merge-acc",
+      "title": "Merge power and adaptive cruise",
+      "zones": [
+        "highway",
+        "i95",
+        "parkway"
+      ],
+      "card": "Setup: the on-ramp is the power demo, and adaptive cruise is the gateway to hands-free.\nHow it works: the 2.9-liter twin-turbo V6 makes 429 horsepower and 442 lb-ft, with 0 to 60 in 4.8 seconds. Audi calls that best in class against the X5 40i, GLE 450, XC90 B6, TX 350 and GV80 3.5T. Adaptive cruise assist plus uses radar and cameras to hold speed and following distance across five distance settings, keeps the car centered in its lane, and handles stop-and-go traffic [VERIFY stop-and-go on the Q7].\nTurn it on now: on the new Audis adaptive cruise has its own lever below the left turn-signal stalk [VERIFY on this car]. Ask the driver to find it by feel, switch it on, set the speed, and pick a following distance. Confirm the green lane lines in the driver display.\nCustomer demo: on the ramp say, \"Go ahead and merge like you normally would.\" Let the power speak, then switch on cruise together.\nWatch-outs: a normal legal merge only, never a launch. The driver keeps hands on the wheel until hands-free is offered.\nPractice: a consultant coaches you through switching on adaptive cruise in three short steps."
+    },
+    {
+      "id": "parkway-merritt",
+      "title": "The Merritt Parkway: when hands-free says no",
+      "zones": [
+        "parkway"
+      ],
+      "card": "Setup: the Merritt is where customers find the limits, so consultants need the answer ready.\nHow it works: hands-free only works on segments in Audi's approved map network, and an older, curvy parkway may not qualify [VERIFY]. The car decides from map data, not the driver. The Merritt is also a great place to feel the steering and quattro in curves.\nTurn it on now: call get_drive_status, then ask the driver whether the hands-free prompt shows. If it doesn't, switch drive select to dynamic at the next stop for the curves.\nCustomer demo: \"On roads it doesn't approve, it tells you up front. That's what you want from a system like this.\"\nWatch-outs: don't promise which roads qualify. Audi says the network can change.\nPractice: a consultant answers \"Why doesn't it work here?\""
+    },
+    {
+      "id": "i95-handsfree",
+      "title": "Hands-free highway driving on I-95",
+      "zones": [
+        "i95",
+        "highway"
+      ],
+      "card": "Setup: this is the headline feature and the one customers will ask about first.\nHow it works: adaptive cruise assist plus with assisted hands-free driving works only on approved, mapped divided highways. The car checks HD map data over 4G LTE or 5G plus GPS and offers hands-free only on qualifying segments. Audi's Q9 material says it works up to about 85 mph [VERIFY]. A driver monitoring camera on the steering column tracks eyes and head. If attention drops, warnings escalate from visual to sound to vibration, and if the driver still doesn't respond, emergency assist brings the car to a controlled stop. It's SAE Level 2, so the driver supervises at all times. It comes with a 3-year trial, and after that a paid subscription may be required. The price isn't published.\nTurn it on now: first call get_drive_status to confirm we're on I-95. With adaptive cruise on, watch for the prompt in the driver display: on the Q9 it reads \"assisted hands-free driving available,\" with two flashing white lights at the bottom of the cluster [VERIFY]. When it appears, the driver can take their hands off the wheel and the lights turn green. Eyes stay on the road.\nCustomer demo: let the customer see the prompt first. \"That's the car telling you this stretch is approved.\" Then say less and let them feel it.\nWatch-outs: it hands back control for weather, construction, lane shifts, map gaps, lost signal, or infrared-blocking sunglasses. Never say self-driving. Say hands-free highway driving, and the driver supervises.\nPractice: a consultant answers \"So it drives itself?\" with the right words."
+    },
+    {
+      "id": "i95-lanechange",
+      "title": "Assisted lane change",
+      "zones": [
+        "i95",
+        "highway"
+      ],
+      "card": "Setup: the lane change is what makes hands-free feel advanced.\nHow it works: while hands-free is active, the driver starts a lane change with the turn signal. The car checks the side radars and cameras for a clear gap and steers into the next lane. It does not change lanes on its own [VERIFY details on the Q7].\nTurn it on now: with hands-free active and the next lane clear, the driver taps the turn signal in the direction they want [VERIFY tap vs hold]. Everyone watch the mirror. If the lane isn't clear, the car waits or cancels.\nCustomer demo: \"You decide when, it handles the how. Signal and watch.\"\nWatch-outs: the driver still checks mirrors. Avoid it in construction zones and heavy merging.\nPractice: a consultant explains why a driver-initiated lane change is a feature, not a limitation."
+    },
+    {
+      "id": "hwy-cabin",
+      "title": "Highway refinement: quiet, HUD and sound",
+      "zones": [
+        "i95",
+        "highway",
+        "parkway"
+      ],
+      "card": "Setup: at 65 mph the Q7 sells itself if you stop talking.\nHow it works: dual-pane acoustic side glass cuts wind and road noise. The head-up display shows speed, speed limits and navigation arrows on the windshield. It isn't augmented reality on the Q7, so don't call it that. Side assist lights the mirror when a car is in the blind spot.\nTurn it on now: everyone goes quiet for ten seconds and just listens. Then point out the blind-spot light the next time a car passes.\nCustomer demo: \"Let's not say anything for a moment. Listen to how quiet this is at highway speed.\"\nWatch-outs: don't claim an AR head-up display.\nPractice: a consultant gives the quiet-cabin line."
+    },
+    {
+      "id": "hwy-safety-words",
+      "title": "Talking safety without staging it",
+      "zones": [
+        "i95",
+        "highway",
+        "local"
+      ],
+      "card": "Setup: customers want to know it will protect their family, but you never demo that live.\nHow it works: forward emergency braking detects cars, pedestrians and cyclists. Side assist and rear cross-traffic assist cover the blind spots. Emergency assist can stop the car in its lane if the driver stops responding. Proactive occupant protection tightens belts and closes windows before an impact. There are 9 airbags.\nTurn it on now: nothing to switch on. This lesson is all about the words.\nCustomer demo: use a story, not a stunt: \"If you looked down at the wrong second, it's watching the road and the people on it.\"\nWatch-outs: never trigger a safety system for a demo. Don't quote crash ratings. The 2027 isn't rated yet.\nPractice: a consultant handles a parent asking \"How safe is it really?\""
+    },
+    {
+      "id": "any-lineup",
+      "title": "Lineup and step-up conversations",
+      "zones": [
+        "any"
+      ],
+      "card": "Setup: knowing the ladder is how you move a customer up without pushing.\nHow it works: Q7 Premium starts at $70,900, Premium Plus at $75,300, Prestige at $84,900, and the SQ7 at $98,700, all before destination. This car is a Premium with the Premium Plus, Executive and Vision packages, so it already has most of what Prestige adds. Prestige adds adaptive air suspension, massage seats, OLED taillights with communication lights, and more parking tech. The SQ7 brings a 591-horsepower V8 with 0 to 60 in 3.7 seconds and standard air suspension.\nTurn it on now: no controls. Ask each consultant which customer they'd step up and why.\nCustomer demo: tie the step-up to something the customer said, like \"you mentioned the long drive to your parents\" for air suspension and massage.\nWatch-outs: never quote payments or discounts on a drive.\nPractice: role-play a customer torn between this car and a Prestige."
+    },
+    {
+      "id": "any-competitors",
+      "title": "Competitor conversations",
+      "zones": [
+        "any"
+      ],
+      "card": "Setup: most Q7 shoppers have driven an X5, GLE or XC90 this month.\nHow it works: Audi claims best-in-class power and 0 to 60 against the X5 40i, GLE 450, XC90 B6, TX 350 and GV80 3.5T. The X5 has no third row in the US, and the GLE's third row is an extra-cost option. The Q7 has seven seats standard, 78.1 cubic feet of cargo, 7,700 pounds of towing with the hitch, and a 4-year/50,000-mile warranty with 3 years of scheduled maintenance.\nTurn it on now: no controls. Ask what the last customer cross-shopped.\nCustomer demo: ask what they liked about the other car first, then answer with one Q7 strength they can feel on this drive.\nWatch-outs: never trash a competitor or quote specs you can't back up.\nPractice: a consultant handles \"The X5 felt sportier.\""
+    },
+    {
+      "id": "return-parking",
+      "title": "Parking, towing and the finish",
+      "zones": [
+        "return"
+      ],
+      "card": "Setup: the last two minutes of a demo are what customers remember at the desk.\nHow it works: park assist plus is standard on the 2027 Q7 according to Audi's release [VERIFY on this car]. It can steer into a space with the sensors and surround view cameras. Trained parking (stores up to 5 maneuvers of up to 650 feet), reverse assist, and remote park assist through the myAudi app are on the new Q7, but which trims get them isn't published, so check before promising [VERIFY]. This car has the trailer hitch for 7,700 pounds. Trailer maneuvering assist is optional.\nTurn it on now: back into a space using the surround view, and try park assist if the button is there [VERIFY]. Pop the power tailgate.\nCustomer demo: let the customer park it themselves with the cameras. \"You just parked a seven-seat SUV in one go.\"\nWatch-outs: don't promise remote parking on this car without checking.\nPractice: a consultant gives the closing line that moves the customer from the car to the desk."
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief and quiz",
+      "zones": [
+        "return"
+      ],
+      "card": "Setup: lock it in before everyone walks away.\nHow it works: quick review of what we covered on this drive.\nTurn it on now: nothing to switch on. Park and take five minutes.\nCustomer demo: ask each consultant to give their 60-second version of the full demo drive.\nWatch-outs: check that nobody said \"self-driving\" all drive.\nPractice: ask three quick quiz questions from today's lessons, including hands-free conditions and the lane-change trigger. Then give each consultant one specific strength and one thing to work on. End by telling Alex which lessons were skipped so they can cover them next time."
+    }
+  ]
+}

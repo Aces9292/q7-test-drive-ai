@@ -1,6 +1,6 @@
 {
-  "name": "Q7 Test Drive AI",
-  "short_name": "Q7 Drive",
+  "name": "Q7 Training Drive",
+  "short_name": "Q7 Training",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

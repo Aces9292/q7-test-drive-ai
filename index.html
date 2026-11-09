@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f1113">
-<title>Q7 Test Drive AI</title>
+<title>Q7 Training Drive</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +44,7 @@ body.speaking .bars i { opacity: 1; animation: bar .9s ease-in-out infinite; }
 .bars i:nth-child(2) { animation-delay: .15s; } .bars i:nth-child(3) { animation-delay: .3s; } .bars i:nth-child(4) { animation-delay: .45s; }
 @keyframes bar { 0%,100% { height: 6px; } 50% { height: 22px; } }
 
-#captions { flex: 1; min-height: 120px; max-height: 40vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 1rem; }
+#captions { flex: 1; min-height: 90px; max-height: 32vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 1rem; }
 #captions p { margin: 0; color: var(--muted); }
 #captions p.ai { color: var(--fg); }
 #captions b { font: 600 .75rem var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-right: 4px; }
@@ -56,7 +56,15 @@ button { font: 700 1.15rem/1.1 var(--display); letter-spacing: .04em; text-trans
 button:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 button:disabled { opacity: .5; }
 #startBtn { grid-column: 1 / -1; min-height: 96px; font-size: 1.6rem; background: var(--live); color: #062514; border: 0; }
-#suggestBtn { grid-column: 1 / -1; min-height: 64px; border-color: var(--accent); color: var(--accent); }
+.lesson { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.lesson-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font: 600 .8rem var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+#lessonMeta { color: var(--accent); }
+.track { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+#lessonBar { height: 100%; width: 0; background: var(--accent); transition: width .4s; }
+#lessonTitle { margin: 0; font: 700 1.45rem/1.15 var(--display); text-wrap: balance; }
+.lesson-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.lesson-actions button { min-height: 56px; font-size: 1rem; padding: 8px; }
+#nextBtn { border-color: var(--accent); color: var(--accent); }
 .where { margin: 0; font: 600 .95rem var(--display); letter-spacing: .05em; text-transform: uppercase; color: var(--accent); min-height: 1.2em; }
 .where:empty { display: none; }
 #endBtn { background: transparent; border-color: var(--stop); color: var(--stop); }
@@ -84,8 +92,8 @@ details summary { cursor: pointer; color: var(--muted); }
 <div class="app">
   <header>
     <div>
-      <h1>Q7 Test Drive AI</h1>
-      <p class="plate">2027 Q7 quattro · Merapi Gray · Audi Fairfield</p>
+      <h1>Q7 Training Drive</h1>
+      <p class="plate">2027 Q7 demo training · Audi Fairfield</p>
     </div>
     <button type="button" class="icon-btn" id="openSettings">Settings</button>
   </header>
@@ -97,6 +105,17 @@ details summary { cursor: pointer; color: var(--muted); }
     <p id="where" class="where"></p>
   </section>
 
+  <section class="lesson" id="lessonCard" hidden>
+    <div class="lesson-top"><span id="lessonMeta"></span><span id="lessonCount"></span></div>
+    <div class="track"><div id="lessonBar"></div></div>
+    <p id="lessonTitle"></p>
+    <div class="lesson-actions">
+      <button type="button" id="nextBtn">Next lesson</button>
+      <button type="button" id="repeatBtn">Repeat</button>
+      <button type="button" id="practiceBtn">Practice</button>
+    </div>
+  </section>
+
   <div id="captions" aria-live="polite"></div>
   <div class="spacer"></div>
 
@@ -104,13 +123,12 @@ details summary { cursor: pointer; color: var(--muted); }
     <button type="button" id="startBtn">Start test drive</button>
   </div>
   <div class="controls" id="driveControls" hidden>
-    <button type="button" id="suggestBtn" class="wide">Suggest a feature</button>
     <button type="button" id="hushBtn">Stop talking</button>
     <button type="button" id="micBtn" aria-pressed="false">Mic on</button>
-    <button type="button" id="backBtn">Heading back</button>
+    <button type="button" id="debriefBtn">Debrief</button>
     <button type="button" id="endBtn">End drive</button>
   </div>
-  <p class="fine">Passenger operates this screen. Nothing from the drive is saved on this phone.</p>
+  <p class="fine">Passenger runs this screen. Nothing from the drive is saved on this phone.</p>
 </div>
 
 <dialog id="settings">
@@ -126,7 +144,7 @@ details summary { cursor: pointer; color: var(--muted); }
     </label>
     <label class="check"><input type="checkbox" id="echoGuard"> Pause the mic while the AI talks (stops it from hearing itself through the car speakers)</label>
     <label class="check"><input type="checkbox" id="captionsOn"> Show live captions</label>
-    <label class="check"><input type="checkbox" id="locationOn"> Use the phone's location to suggest features for the moment (city, highway, stopped)</label>
+    <label class="check"><input type="checkbox" id="locationOn"> Use the phone's location to sync lessons to the road (lot, local, I-95, Merritt, stopped)</label>
     <details>
       <summary>Advanced</summary>
       <label for="model" style="margin-top:10px">Model
