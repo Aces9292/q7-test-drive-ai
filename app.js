@@ -267,7 +267,7 @@ async function startMic() {
   S.micStream = await navigator.mediaDevices.getUserMedia({
     audio: { channelCount: 1, echoCancellation: !car, noiseSuppression: !car, autoGainControl: !car },
   });
-  await S.ctx.audioWorklet.addModule('mic-worklet.js');
+  await S.ctx.audioWorklet.addModule('mic-worklet.js?v=5');
   const src = S.ctx.createMediaStreamSource(S.micStream);
   S.micNode = new AudioWorkletNode(S.ctx, 'mic-processor');
   const mute = S.ctx.createGain();
