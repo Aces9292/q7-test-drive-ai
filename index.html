@@ -56,6 +56,9 @@ button { font: 700 1.15rem/1.1 var(--display); letter-spacing: .04em; text-trans
 button:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 button:disabled { opacity: .5; }
 #startBtn { grid-column: 1 / -1; min-height: 96px; font-size: 1.6rem; background: var(--live); color: #062514; border: 0; }
+#suggestBtn { grid-column: 1 / -1; min-height: 64px; border-color: var(--accent); color: var(--accent); }
+.where { margin: 0; font: 600 .95rem var(--display); letter-spacing: .05em; text-transform: uppercase; color: var(--accent); min-height: 1.2em; }
+.where:empty { display: none; }
 #endBtn { background: transparent; border-color: var(--stop); color: var(--stop); }
 #micBtn[aria-pressed="true"] { background: var(--warn); color: #2a1a00; border: 0; }
 .fine { margin: 0; font-size: .82rem; color: var(--muted); text-align: center; }
@@ -91,6 +94,7 @@ details summary { cursor: pointer; color: var(--muted); }
     <div class="status-row"><span id="statusWord">Ready</span><span id="timer"></span></div>
     <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <p id="statusDetail" style="margin:0"></p>
+    <p id="where" class="where"></p>
   </section>
 
   <div id="captions" aria-live="polite"></div>
@@ -100,6 +104,7 @@ details summary { cursor: pointer; color: var(--muted); }
     <button type="button" id="startBtn">Start test drive</button>
   </div>
   <div class="controls" id="driveControls" hidden>
+    <button type="button" id="suggestBtn" class="wide">Suggest a feature</button>
     <button type="button" id="hushBtn">Stop talking</button>
     <button type="button" id="micBtn" aria-pressed="false">Mic on</button>
     <button type="button" id="backBtn">Heading back</button>
@@ -121,6 +126,7 @@ details summary { cursor: pointer; color: var(--muted); }
     </label>
     <label class="check"><input type="checkbox" id="echoGuard"> Pause the mic while the AI talks (stops it from hearing itself through the car speakers)</label>
     <label class="check"><input type="checkbox" id="captionsOn"> Show live captions</label>
+    <label class="check"><input type="checkbox" id="locationOn"> Use the phone's location to suggest features for the moment (city, highway, stopped)</label>
     <details>
       <summary>Advanced</summary>
       <label for="model" style="margin-top:10px">Model

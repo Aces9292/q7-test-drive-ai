@@ -4,7 +4,7 @@
 
 const WS_URL =
   'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
-const DEFAULTS = { apiKey: '', model: 'gemini-3.8-live', voice: 'Achird', echoGuard: true, captions: true };
+const DEFAULTS = { apiKey: '', model: 'gemini-3.8-live', voice: 'Achird', echoGuard: true, captions: true, location: true };
 const VOICES = [
   ['Achird', 'friendly'], ['Sulafat', 'warm'], ['Puck', 'upbeat'], ['Charon', 'informative'],
   ['Kore', 'firm'], ['Orus', 'firm'], ['Aoede', 'breezy'], ['Fenrir', 'excitable'], ['Leda', 'youthful'],
@@ -41,6 +41,8 @@ const S = {
   startedAt: 0,
   timer: null,
   lastSpeaker: null,
+  lastHeardAt: 0,
+  geo: null,
 };
 
 // ---------- settings ----------
@@ -64,6 +66,7 @@ function fillSettingsForm() {
   sel.value = S.settings.voice;
   $('echoGuard').checked = S.settings.echoGuard;
   $('captionsOn').checked = S.settings.captions;
+  $('locationOn').checked = S.settings.location;
   $('model').value = S.settings.model;
 }
 
@@ -78,6 +81,7 @@ $('settingsForm').addEventListener('submit', (e) => {
   S.settings.voice = $('voice').value;
   S.settings.echoGuard = $('echoGuard').checked;
   S.settings.captions = $('captionsOn').checked;
+  S.settings.location = $('locationOn').checked;
   S.settings.model = $('model').value.trim() || DEFAULTS.model;
   saveSettings();
   $('settings').close();
@@ -142,6 +146,11 @@ function tick() {
   $('timer').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const speaking = isSpeaking();
   document.body.classList.toggle('speaking', speaking);
+  if (S.geo) {
+    if (S.geo.phase === 'stopped' && Date.now() - S.geo.phaseSince > PARKED_AFTER_MS) setPhase('parked');
+    renderWhere();
+    tryCue();
+  }
   if (S.ready) {
     if (!S.micOn) setStatus('Mic off', 'The AI can’t hear the car. Tap Mic off to turn it back on.', 'warn');
     else if (speaking) setStatus('Speaking', S.settings.echoGuard ? 'Mic paused while it talks. Tap Stop talking to cut in.' : '', 'live');
@@ -262,7 +271,7 @@ function onServer(msg) {
     setStatus('Listening', '', 'live');
     if (!S.kicked) {
       S.kicked = true;
-      sendText(KICKOFF);
+      kickoff();
     }
   }
   const sc = msg.serverContent;
@@ -276,7 +285,10 @@ function onServer(msg) {
     for (const part of sc.modelTurn?.parts || []) {
       if (part.inlineData?.data) playPcm(part.inlineData.data);
     }
-    if (sc.inputTranscription?.text) caption('car', sc.inputTranscription.text);
+    if (sc.inputTranscription?.text) {
+      S.lastHeardAt = Date.now();
+      caption('car', sc.inputTranscription.text);
+    }
     if (sc.outputTranscription?.text && !S.dropTurn) caption('ai', sc.outputTranscription.text);
     if (sc.turnComplete) {
       S.dropTurn = false;
@@ -286,6 +298,17 @@ function onServer(msg) {
   const ru = msg.sessionResumptionUpdate;
   if (ru && ru.resumable && ru.newHandle) S.handle = ru.newHandle;
   if (msg.goAway) reconnect('Refreshing the connection…');
+}
+
+// Opening line. Waits up to 3 s for a first GPS fix so the AI knows where the car is.
+function kickoff(tries = 0) {
+  if (!S.running) return;
+  if (S.geo && !S.geo.fixes && !S.geo.denied && tries < 12) {
+    setTimeout(() => kickoff(tries + 1), 250);
+    return;
+  }
+  sendText(S.geo && S.geo.fixes ? `${KICKOFF} ${driveUpdate('start')}` : KICKOFF);
+  if (S.geo) S.geo.lastCueAt = Date.now();
 }
 
 function reconnect(detail) {
@@ -317,6 +340,149 @@ function onClose(ws, ev) {
   setTimeout(() => S.running && connect(), 1000 * S.reconnects);
 }
 
+// ---------- location: suggest features that fit the moment ----------
+const MPH = 2.23694; // m/s to mph
+const PARKED_AFTER_MS = 120000; // stopped this long = parked
+const CUE_COOLDOWN_MS = 90000; // at most one automatic suggestion per 90 s
+const QUIET_BEFORE_CUE_MS = 5000; // wait until nobody has spoken for 5 s
+const HOLD_MS = { parked: 0, stopped: 12000, city: 15000, highway: 20000 };
+const PHASE_LABEL = { parked: 'Parked', stopped: 'Stopped', city: 'City', highway: 'Highway' };
+const PHASE_TEXT = {
+  parked: 'parked',
+  stopped: 'stopped at a light or in traffic',
+  city: 'driving on city streets',
+  highway: 'on the highway',
+};
+
+function startLocation() {
+  if (!navigator.geolocation) return;
+  S.geo = {
+    watchId: null, fixes: 0, last: null, speedMph: 0, moved: false,
+    phase: 'parked', phaseSince: Date.now(), candidate: null, candidateSince: 0,
+    road: '', roadAt: 0, roadPos: null, lastCueAt: 0, pending: null, pendingAt: 0, denied: false,
+  };
+  S.geo.watchId = navigator.geolocation.watchPosition(onPosition, (err) => {
+    if (S.geo && err.code === 1) S.geo.denied = true;
+  }, { enableHighAccuracy: true, maximumAge: 1000, timeout: 20000 });
+}
+
+function stopLocation() {
+  if (S.geo && S.geo.watchId != null) navigator.geolocation.clearWatch(S.geo.watchId);
+  S.geo = null;
+  $('where').textContent = '';
+}
+
+function metersBetween(a, b) {
+  const R = 6371000, toRad = Math.PI / 180;
+  const dLat = (b.latitude - a.latitude) * toRad, dLon = (b.longitude - a.longitude) * toRad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.latitude * toRad) * Math.cos(b.latitude * toRad) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function onPosition(pos) {
+  const g = S.geo;
+  if (!g) return;
+  g.denied = false;
+  const c = pos.coords;
+  let mps = c.speed;
+  if ((mps == null || mps < 0) && g.last) {
+    const dt = (pos.timestamp - g.last.timestamp) / 1000;
+    mps = dt > 0 ? metersBetween(g.last.coords, c) / dt : 0;
+  }
+  g.last = pos;
+  g.fixes++;
+  g.speedMph = (mps || 0) * MPH;
+  if (g.speedMph > 10) g.moved = true;
+
+  let candidate;
+  if (g.speedMph < 3) candidate = g.moved ? 'stopped' : 'parked';
+  else if (g.speedMph >= 50) candidate = 'highway';
+  else if (g.speedMph <= 45) candidate = 'city';
+  else candidate = g.phase === 'highway' ? 'highway' : 'city'; // 45-50 mph: keep highway once on it
+  if (g.phase === 'parked' && candidate === 'stopped') candidate = 'parked';
+
+  const now = Date.now();
+  if (candidate === g.phase) {
+    g.candidate = null;
+  } else if (candidate !== g.candidate) {
+    g.candidate = candidate;
+    g.candidateSince = now;
+  } else if (now - g.candidateSince >= HOLD_MS[candidate]) {
+    setPhase(candidate);
+  }
+
+  // Road name, at most every 45 s and only after moving 300 m.
+  if ((g.phase === 'city' || g.phase === 'highway') && now - g.roadAt > 45000 &&
+      (!g.roadPos || metersBetween(g.roadPos, c) > 300)) {
+    g.roadAt = now;
+    g.roadPos = { latitude: c.latitude, longitude: c.longitude };
+    lookupRoad(c.latitude, c.longitude);
+  }
+}
+
+async function lookupRoad(lat, lon) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=17&lat=${lat.toFixed(3)}&lon=${lon.toFixed(3)}`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    if (!r.ok) return;
+    const d = await r.json();
+    const road = d.address && (d.address.road || d.address.highway) || d.name || '';
+    if (S.geo && road) S.geo.road = road;
+  } catch { /* road name is a nice-to-have */ }
+}
+
+function setPhase(p) {
+  const g = S.geo;
+  if (!g || g.phase === p) return;
+  g.phase = p;
+  g.phaseSince = Date.now();
+  g.candidate = null;
+  if (p === 'parked' && !g.moved) return;
+  g.pending = 'auto';
+  g.pendingAt = Date.now();
+}
+
+function driveUpdate(reason) {
+  const g = S.geo;
+  const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  if (!g || !g.fixes) {
+    return `[Drive update] Location isn't available. Local time ${time}. Alex tapped "Suggest a feature": ask where we are, or offer a feature that works anywhere.`;
+  }
+  let text = `[Drive update] The car is ${PHASE_TEXT[g.phase]}`;
+  if (g.phase === 'parked' && !g.moved) text += ' in the dealership lot';
+  if (g.road && g.phase !== 'parked') text += ` on ${g.road}`;
+  if (g.phase === 'city' || g.phase === 'highway') text += `, about ${Math.round(g.speedMph)} mph`;
+  text += `. Local time ${time}.`;
+  if (reason === 'manual') text += ' Alex tapped "Suggest a feature". Offer one feature that fits right now, with a one-line how-to.';
+  else if (reason === 'auto') text += ' If it fits the conversation, suggest one feature for this moment, with a one-line how-to.';
+  return text;
+}
+
+function tryCue() {
+  const g = S.geo;
+  if (!g || !g.pending || !S.ready) return;
+  const now = Date.now();
+  if (now - g.pendingAt > 90000) { g.pending = null; return; } // moment passed
+  if (S.generating || isSpeaking()) return;
+  if (now - S.lastHeardAt < QUIET_BEFORE_CUE_MS) return;
+  if (now - g.lastCueAt < CUE_COOLDOWN_MS) return;
+  g.pending = null;
+  g.lastCueAt = now;
+  send({ realtimeInput: { text: driveUpdate('auto') } });
+}
+
+function renderWhere() {
+  const g = S.geo;
+  const el = $('where');
+  if (!g) { el.textContent = ''; return; }
+  if (g.denied) { el.textContent = 'Location blocked. Allow it in Chrome for live suggestions.'; return; }
+  if (!g.fixes) { el.textContent = 'Finding GPS…'; return; }
+  const bits = [PHASE_LABEL[g.phase]];
+  if (g.road && g.phase !== 'parked') bits.push(g.road);
+  if (g.phase === 'city' || g.phase === 'highway') bits.push(`${Math.round(g.speedMph)} mph`);
+  el.textContent = bits.join(' · ');
+}
+
 // ---------- drive lifecycle ----------
 async function startDrive() {
   if (!S.settings.apiKey) { openSettings(); return; }
@@ -346,9 +512,11 @@ async function startDrive() {
   S.handle = null;
   S.reconnects = 0;
   S.micOn = true;
+  S.lastHeardAt = 0;
   S.startedAt = Date.now();
   S.timer = setInterval(tick, 250);
   requestWakeLock();
+  if (S.settings.location) startLocation();
   renderDriving();
   setStatus('Connecting', '', 'warn');
   connect();
@@ -372,6 +540,7 @@ function endDrive() {
   if (ws) { ws.onclose = null; try { ws.close(1000); } catch { /* ignore */ } }
   cleanupAudio();
   clearInterval(S.timer);
+  stopLocation();
   S.handle = null;
   S.generating = false;
   S.dropTurn = false;
@@ -402,6 +571,11 @@ $('hushBtn').addEventListener('click', () => {
   tick();
 });
 $('backBtn').addEventListener('click', () => sendText(HEADING_BACK));
+$('suggestBtn').addEventListener('click', () => {
+  if (!S.ready) return;
+  if (S.geo) S.geo.lastCueAt = Date.now();
+  sendText(driveUpdate('manual'));
+});
 
 renderIdle();
 if (!S.settings.apiKey) openSettings();

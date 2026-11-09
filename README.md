@@ -7,6 +7,7 @@ A phone web app that turns Google's Gemini Live into a ride-along voice salesper
 - `index.html`, `app.js`: the app. It connects straight from the phone's browser to the Gemini Live API (model `gemini-3.8-live`) over a WebSocket.
 - `guide.txt`: everything the AI knows and how it should sell. It's sent as the AI's instructions at the start of every drive. **To switch to a different car, edit this file.**
 - `mic-worklet.js`: turns the phone mic into the 16 kHz audio format Gemini expects.
+- **Live location:** the phone's GPS tells the app whether you're parked, in town, on the highway, or stopped. When that changes, the AI gets a quiet "[Drive update]" and suggests one feature that fits, with a one-line how-to for the driver. Suggestions come at most every 90 seconds. Tap **Suggest a feature** for one anytime. Road names come from OpenStreetMap (location rounded to about 100 m). Turn location off in Settings.
 - No server and no database. The API key is stored only in that phone's browser. Captions are cleared when the drive ends.
 
 ## One-time setup
@@ -21,7 +22,7 @@ A phone web app that turns Google's Gemini Live into a ride-along voice salesper
 1. Plug the phone into the Q7 so Android Auto is running, and turn the car volume up.
 2. Keep the app open on the phone screen. It keeps the screen awake. The passenger runs it, never the driver.
 3. Tap **Start test drive**. The AI introduces itself.
-4. Buttons: **Stop talking** cuts it off, **Mic on/off** mutes it, **Heading back** starts the closing questions, **End drive** stops everything.
+4. Buttons: **Suggest a feature** asks for one that fits right now, **Stop talking** cuts it off, **Mic on/off** mutes it, **Heading back** starts the closing questions, **End drive** stops everything.
 
 ## Cost
 
@@ -29,4 +30,4 @@ About $0.005 per minute for audio in and $0.018 per minute for audio out, so a 3
 
 ## Before customers use it
 
-PAG IT's directive (Aug 24, 2026) says customer data can't go through personal systems or services. On a personal API key, customer speech goes to Google. Get written sign-off from IT or your manager before using it with customers. Until then, test it on solo drives.
+PAG IT's directive (Aug 24, 2026) says customer data can't go through personal systems or services. On a personal API key, customer speech and the car's rough location go to Google, and road lookups go to OpenStreetMap. Get written sign-off from IT or your manager before using it with customers. Until then, test it on solo drives.
