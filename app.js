@@ -13,7 +13,7 @@
 
 const WS_URL =
   'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
-const DEFAULTS = { apiKey: '', model: 'gemini-3.8-live', voice: 'Charon', echoGuard: true, captions: true, location: true };
+const DEFAULTS = { apiKey: '', model: 'gemini-3.8-live', voice: 'Charon', echoGuard: true, captions: true, location: true, carAudio: true };
 const VOICES = [
   ['Charon', 'informative'], ['Achird', 'friendly'], ['Sulafat', 'warm'], ['Puck', 'upbeat'],
   ['Kore', 'firm'], ['Orus', 'firm'], ['Aoede', 'breezy'], ['Fenrir', 'excitable'], ['Leda', 'youthful'],
@@ -107,6 +107,7 @@ function fillSettingsForm() {
   $('echoGuard').checked = S.settings.echoGuard;
   $('captionsOn').checked = S.settings.captions;
   $('locationOn').checked = S.settings.location;
+  $('carAudio').checked = S.settings.carAudio;
   $('model').value = S.settings.model;
 }
 
@@ -122,6 +123,7 @@ $('settingsForm').addEventListener('submit', (e) => {
   S.settings.echoGuard = $('echoGuard').checked;
   S.settings.captions = $('captionsOn').checked;
   S.settings.location = $('locationOn').checked;
+  S.settings.carAudio = $('carAudio').checked;
   S.settings.model = $('model').value.trim() || DEFAULTS.model;
   saveSettings();
   $('settings').close();
@@ -258,8 +260,12 @@ function toBase64(buffer) {
 }
 
 async function startMic() {
+  // Car audio mode: with echo cancellation on, Android switches the phone into "call" mode,
+  // Android Auto treats it as a phone call, and mutes the voice we play on the media channel.
+  // So in the car we turn the call-style processing off and rely on the echo guard instead.
+  const car = S.settings.carAudio;
   S.micStream = await navigator.mediaDevices.getUserMedia({
-    audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    audio: { channelCount: 1, echoCancellation: !car, noiseSuppression: !car, autoGainControl: !car },
   });
   await S.ctx.audioWorklet.addModule('mic-worklet.js');
   const src = S.ctx.createMediaStreamSource(S.micStream);
@@ -269,7 +275,7 @@ async function startMic() {
   src.connect(S.micNode).connect(mute).connect(S.ctx.destination);
   S.micNode.port.onmessage = (e) => {
     if (!S.ready || !S.micOn) return;
-    if (S.settings.echoGuard && isSpeaking()) return; // don't let the AI hear itself through the car speakers
+    if ((S.settings.echoGuard || S.settings.carAudio) && isSpeaking()) return; // don't let the AI hear itself through the car speakers
     send({ realtimeInput: { audio: { data: toBase64(e.data), mimeType: 'audio/pcm;rate=16000' } } });
   };
 }
