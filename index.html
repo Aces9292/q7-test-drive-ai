@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1113">
+<title>Q7 Test Drive AI</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: one-column, dark-only cockpit screen run from the passenger seat. Huge status word, captions, thumb-sized controls at the bottom. */
+:root {
+  color-scheme: dark;
+  --bg: #0f1113; --panel: #181b1e; --line: #2a2f34; --fg: #eceef0; --muted: #9aa1a8;
+  --live: #4cc38a; --warn: #f0a63a; --stop: #f07a70; --accent: #f0a63a;
+  --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "Source Sans 3", -apple-system, Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.45 var(--body);
+  padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px)); }
+.app { max-width: 560px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; gap: 18px; padding-block: 16px 20px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+h1 { margin: 0; font: 700 1.5rem/1.1 var(--display); letter-spacing: .01em; }
+.plate { margin: 2px 0 0; font: 500 .82rem/1.3 var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.icon-btn { background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 10px; min-width: 48px; min-height: 48px; font: 600 .9rem var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 0 14px; }
+
+.status { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; }
+.status::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--tone, var(--muted)); }
+body[data-tone="live"] { --tone: var(--live); }
+body[data-tone="warn"] { --tone: var(--warn); }
+body[data-tone="stop"] { --tone: var(--stop); }
+.status-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+#statusWord { font: 700 2.6rem/1 var(--display); color: var(--tone, var(--fg)); }
+#timer { font: 600 1.2rem var(--display); color: var(--muted); font-variant-numeric: tabular-nums; }
+#statusDetail { color: var(--muted); min-height: 1.45em; }
+.bars { display: flex; gap: 4px; height: 22px; align-items: end; }
+.bars i { width: 6px; height: 6px; background: var(--live); border-radius: 2px; opacity: .35; }
+body.speaking .bars i { opacity: 1; animation: bar .9s ease-in-out infinite; }
+.bars i:nth-child(2) { animation-delay: .15s; } .bars i:nth-child(3) { animation-delay: .3s; } .bars i:nth-child(4) { animation-delay: .45s; }
+@keyframes bar { 0%,100% { height: 6px; } 50% { height: 22px; } }
+
+#captions { flex: 1; min-height: 120px; max-height: 40vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 1rem; }
+#captions p { margin: 0; color: var(--muted); }
+#captions p.ai { color: var(--fg); }
+#captions b { font: 600 .75rem var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-right: 4px; }
+#captions p.car b { color: var(--muted); }
+.spacer { flex: 1; }
+
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+button { font: 700 1.15rem/1.1 var(--display); letter-spacing: .04em; text-transform: uppercase; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); min-height: 72px; padding: 12px; cursor: pointer; }
+button:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button:disabled { opacity: .5; }
+#startBtn { grid-column: 1 / -1; min-height: 96px; font-size: 1.6rem; background: var(--live); color: #062514; border: 0; }
+#endBtn { background: transparent; border-color: var(--stop); color: var(--stop); }
+#micBtn[aria-pressed="true"] { background: var(--warn); color: #2a1a00; border: 0; }
+.fine { margin: 0; font-size: .82rem; color: var(--muted); text-align: center; }
+
+dialog { background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; width: min(520px, calc(100vw - 32px)); padding: 0; }
+dialog::backdrop { background: rgba(0,0,0,.6); }
+dialog form { display: flex; flex-direction: column; gap: 14px; padding: 18px; }
+dialog h2 { margin: 0; font: 700 1.3rem var(--display); }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
+label.check { flex-direction: row; align-items: center; gap: 10px; font-weight: 400; }
+label.check input { width: 22px; height: 22px; flex: none; }
+input[type=text], input[type=password], select { font: 1rem var(--body); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; min-width: 0; width: 100%; }
+.hint { font-weight: 400; font-size: .85rem; color: var(--muted); }
+.hint a { color: var(--accent); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row button { flex: 1; min-height: 52px; font-size: 1rem; }
+.row .primary { background: var(--live); color: #062514; border: 0; }
+details summary { cursor: pointer; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { body.speaking .bars i { animation: none; } }
+</style>
+</head>
+<body data-tone="idle">
+<div class="app">
+  <header>
+    <div>
+      <h1>Q7 Test Drive AI</h1>
+      <p class="plate">2027 Q7 quattro · Merapi Gray · Audi Fairfield</p>
+    </div>
+    <button type="button" class="icon-btn" id="openSettings">Settings</button>
+  </header>
+
+  <section class="status" aria-live="polite">
+    <div class="status-row"><span id="statusWord">Ready</span><span id="timer"></span></div>
+    <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <p id="statusDetail" style="margin:0"></p>
+  </section>
+
+  <div id="captions" aria-live="polite"></div>
+  <div class="spacer"></div>
+
+  <div class="controls" id="idleControls">
+    <button type="button" id="startBtn">Start test drive</button>
+  </div>
+  <div class="controls" id="driveControls" hidden>
+    <button type="button" id="hushBtn">Stop talking</button>
+    <button type="button" id="micBtn" aria-pressed="false">Mic on</button>
+    <button type="button" id="backBtn">Heading back</button>
+    <button type="button" id="endBtn">End drive</button>
+  </div>
+  <p class="fine">Passenger operates this screen. Nothing from the drive is saved on this phone.</p>
+</div>
+
+<dialog id="settings">
+  <form id="settingsForm">
+    <h2>Settings</h2>
+    <label for="apiKey">Gemini API key
+      <input type="password" id="apiKey" autocomplete="off" spellcheck="false" placeholder="Paste key from Google AI Studio">
+      <span class="hint">Create one at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Use a project with billing turned on so drives aren't used to train Google's models. The key stays on this phone only.</span>
+    </label>
+    <label class="check"><input type="checkbox" id="showKey"> Show key</label>
+    <label for="voice">AI voice
+      <select id="voice"></select>
+    </label>
+    <label class="check"><input type="checkbox" id="echoGuard"> Pause the mic while the AI talks (stops it from hearing itself through the car speakers)</label>
+    <label class="check"><input type="checkbox" id="captionsOn"> Show live captions</label>
+    <details>
+      <summary>Advanced</summary>
+      <label for="model" style="margin-top:10px">Model
+        <input type="text" id="model" spellcheck="false">
+        <span class="hint">Default: gemini-3.8-live</span>
+      </label>
+    </details>
+    <div class="row">
+      <button type="button" id="forgetKey">Forget key</button>
+      <button type="button" id="closeSettings">Cancel</button>
+      <button type="submit" class="primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>

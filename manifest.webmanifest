@@ -1,0 +1,11 @@
+{
+  "name": "Q7 Test Drive AI",
+  "short_name": "Q7 Drive",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1113",
+  "theme_color": "#0f1113",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
